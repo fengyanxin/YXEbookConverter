@@ -1,0 +1,28 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+
+# Node (only relevant if you later add a build pipeline)
+node_modules/
+
+# AI / code intelligence helpers (auto-generated locally)
+.claude/
+.cursor/
+.gitnexus/
+AGENTS.md
+CLAUDE.md
+
+# Local dependency mirror (optional, see README)
+vendor/

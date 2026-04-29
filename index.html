@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电子书格式转换工具</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <header class="header">
+            <div class="logo">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" y="4" width="32" height="32" rx="4" fill="currentColor" opacity="0.1"/>
+                    <path d="M12 12h16M12 18h16M12 24h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <h1>电子书转换器</h1>
+            </div>
+            <p class="subtitle">纯浏览器完成 TXT / Markdown / HTML / EPUB 转换，无需上传服务器</p>
+        </header>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <!-- 上传区域 -->
+            <section class="upload-section" id="uploadSection">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M32 4L32 48M32 4L16 20M32 4L48 20" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M8 52L8 60L56 60L56 52" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>拖放文件到这里</h3>
+                    <p>或者点击选择文件</p>
+                    <span class="file-types">支持格式：TXT、Markdown、HTML、EPUB</span>
+                    <input type="file" id="fileInput" accept=".txt,.epub,.html,.htm,.md,.markdown" hidden>
+                </div>
+            </section>
+
+            <!-- 文件信息和格式选择 -->
+            <section class="conversion-section hidden" id="conversionSection">
+                <div class="file-info">
+                    <div class="file-icon" id="fileIcon">📄</div>
+                    <div class="file-details">
+                        <h4 id="fileName">文件名</h4>
+                        <p id="fileSize">0 KB</p>
+                    </div>
+                    <button class="remove-btn" id="removeBtn">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="format-selector">
+                    <label>转换为：</label>
+                    <div class="format-options">
+                        <label class="format-option">
+                            <input type="radio" name="format" value="epub" checked>
+                            <span>EPUB</span>
+                        </label>
+                        <label class="format-option">
+                            <input type="radio" name="format" value="txt">
+                            <span>TXT</span>
+                        </label>
+                        <label class="format-option">
+                            <input type="radio" name="format" value="html">
+                            <span>HTML</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 资源附件（封面 / 附带图片） -->
+                <div class="resources-section hidden" id="resourcesSection">
+                    <div class="resource-row" id="coverRow">
+                        <div class="resource-label">封面图片</div>
+                        <div class="resource-control">
+                            <input type="file" id="coverInput" accept="image/*" hidden>
+                            <button class="resource-btn" id="coverBtn" type="button">选择封面</button>
+                            <span class="resource-info" id="coverInfo">未选择（可选）</span>
+                            <button class="resource-clear hidden" id="coverClear" type="button">移除</button>
+                        </div>
+                    </div>
+                    <div class="resource-row hidden" id="extraImagesRow">
+                        <div class="resource-label">附带图片</div>
+                        <div class="resource-control">
+                            <input type="file" id="extraImagesInput" accept="image/*" multiple hidden>
+                            <button class="resource-btn" id="extraImagesBtn" type="button">选择图片文件</button>
+                            <span class="resource-info" id="extraImagesInfo">未选择（可选）</span>
+                            <button class="resource-clear hidden" id="extraImagesClear" type="button">清空</button>
+                        </div>
+                        <p class="resource-hint">用于补全文档中相对路径引用的图片，按文件名匹配。data URI 内嵌图片会自动打包，无需在此选择。</p>
+                    </div>
+                </div>
+
+                <!-- EPUB 元数据编辑器 -->
+                <div class="metadata-editor hidden" id="metadataEditor">
+                    <div class="metadata-header">
+                        <h4>编辑 EPUB 元数据</h4>
+                        <p>修改后将重新打包并下载新的 EPUB 文件</p>
+                    </div>
+                    <div class="metadata-grid">
+                        <label>
+                            <span>标题</span>
+                            <input type="text" id="metaTitle" placeholder="书名">
+                        </label>
+                        <label>
+                            <span>作者</span>
+                            <input type="text" id="metaCreator" placeholder="作者">
+                        </label>
+                        <label>
+                            <span>语言</span>
+                            <input type="text" id="metaLanguage" placeholder="zh-CN">
+                        </label>
+                        <label>
+                            <span>出版社</span>
+                            <input type="text" id="metaPublisher" placeholder="出版社">
+                        </label>
+                        <label class="full">
+                            <span>简介</span>
+                            <textarea id="metaDescription" rows="3" placeholder="内容简介"></textarea>
+                        </label>
+                        <label class="full">
+                            <span>标识符</span>
+                            <input type="text" id="metaIdentifier" placeholder="urn:uuid:...">
+                        </label>
+                    </div>
+                </div>
+
+                <button class="convert-btn" id="convertBtn">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    开始转换
+                </button>
+            </section>
+
+            <!-- 转换进度 -->
+            <section class="progress-section hidden" id="progressSection">
+                <h3>转换中...</h3>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <p class="progress-text"><span id="progressPercent">0</span>%</p>
+                <p class="progress-status" id="progressStatus">正在处理...</p>
+            </section>
+
+            <!-- 转换完成 -->
+            <section class="complete-section hidden" id="completeSection">
+                <div class="success-icon">
+                    <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                        <circle cx="32" cy="32" r="28" stroke="#10B981" stroke-width="3"/>
+                        <path d="M20 32L28 40L44 24" stroke="#10B981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h3>转换完成！</h3>
+                <p>您的文件已准备就绪</p>
+                <div class="download-actions">
+                    <button class="download-btn" id="downloadBtn">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M10 3V13M10 13L6 9M10 13L14 9M4 15V17H16V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        下载文件
+                    </button>
+                    <button class="secondary-btn" id="convertAgainBtn">转换另一个</button>
+                </div>
+            </section>
+
+            <!-- 历史记录 -->
+            <section class="history-section">
+                <div class="history-header">
+                    <h3>转换历史</h3>
+                    <button class="clear-history" id="clearHistory">清空</button>
+                </div>
+                <div class="history-list" id="historyList">
+                    <p class="empty-history">暂无转换记录</p>
+                </div>
+            </section>
+        </main>
+
+        <!-- 页脚 -->
+        <footer class="footer">
+            <p>© 2026 电子书转换工具 | 本地完成 TXT / Markdown / HTML / EPUB 转换</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
